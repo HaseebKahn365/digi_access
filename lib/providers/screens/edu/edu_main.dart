@@ -42,22 +42,34 @@ class _EduSubScreenState extends State<EduSubScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
+                    width: 60, // Increased width
+                    height: 60, // Increased height
                     decoration: BoxDecoration(
                       color: Colors.black26,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(16), // Larger radius
                     ),
                     child: IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                      icon: const Icon(
+                        Icons.arrow_back,
+                        color: Colors.white,
+                        size: 32,
+                      ), // Larger icon
                       onPressed: () => Navigator.pop(context),
                     ),
                   ),
                   Container(
+                    width: 60, // Increased width
+                    height: 60, // Increased height
                     decoration: BoxDecoration(
                       color: Colors.black26,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(16), // Larger radius
                     ),
                     child: IconButton(
-                      icon: const Icon(Icons.home, color: Colors.white),
+                      icon: const Icon(
+                        Icons.home,
+                        color: Colors.white,
+                        size: 32,
+                      ), // Larger icon
                       onPressed: () {
                         Navigator.of(
                           context,
@@ -68,11 +80,13 @@ class _EduSubScreenState extends State<EduSubScreen> {
                 ],
               ),
             ),
+            Spacer(),
             YoutubePlayer(
               controller: _controller,
               showVideoProgressIndicator: true,
               progressIndicatorColor: Colors.deepPurple,
             ),
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.only(bottom: 32.0),
               child: Container(
@@ -97,6 +111,7 @@ class _EduSubScreenState extends State<EduSubScreen> {
                 ),
               ),
             ),
+            Spacer(),
           ],
         ),
       ),
