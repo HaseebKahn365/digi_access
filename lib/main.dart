@@ -1,13 +1,14 @@
 import 'package:digi_access/providers/language_provider.dart';
-import 'package:digi_access/providers/screens/settings_screen.dart';
 import 'package:digi_access/providers/theme_provider.dart';
+import 'package:digi_access/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-//instance of LanguageProvider
-final LanguageProvider languageProvider = LanguageProvider();
-
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
   runApp(
     MultiProvider(
       providers: [

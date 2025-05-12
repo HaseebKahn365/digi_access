@@ -1,8 +1,10 @@
 //here is the main screen with 4 domains:
 
-import 'package:digi_access/providers/screens/edu/edu_main.dart';
-import 'package:digi_access/providers/screens/settings_screen.dart';
+import 'package:digi_access/providers/language_provider.dart';
+import 'package:digi_access/screens/edu/edu_main.dart';
+import 'package:digi_access/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
@@ -13,8 +15,24 @@ class MainScreen extends StatelessWidget {
   }
 }
 
-class GridUIScreen extends StatelessWidget {
+class GridUIScreen extends StatefulWidget {
   const GridUIScreen({super.key});
+
+  @override
+  State<GridUIScreen> createState() => _GridUIScreenState();
+}
+
+class _GridUIScreenState extends State<GridUIScreen> {
+  @override
+  void initState() {
+    super.initState();
+    //play audio on page load
+    final languageProvider = Provider.of<LanguageProvider>(
+      context,
+      listen: false,
+    );
+    languageProvider.playAudio('_/main.mp3');
+  }
 
   @override
   Widget build(BuildContext context) {

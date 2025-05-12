@@ -1,5 +1,5 @@
 import 'package:digi_access/providers/language_provider.dart';
-import 'package:digi_access/providers/screens/main_screen.dart';
+import 'package:digi_access/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,7 +18,12 @@ class _LanguageSettingsScreenPageViewState
 
   @override
   void initState() {
-    //play
+    //play audio on page load
+    final languageProvider = Provider.of<LanguageProvider>(
+      context,
+      listen: false,
+    );
+    languageProvider.playAudio('_/login.mp3');
     super.initState();
   }
 
@@ -92,15 +97,13 @@ class LanguageSelectionPage extends StatelessWidget {
                         "اردو",
                         style: TextStyle(color: Colors.white, fontSize: 30),
                       ),
-                      Transform.scale(
-                        scaleX: -1,
-                        child: Switch(
-                          value: languageProvider.isUrdu,
-                          onChanged: (bool value) {
-                            languageProvider.toggleLanguage();
-                          },
-                        ),
+                      Switch(
+                        value: !languageProvider.isUrdu,
+                        onChanged: (bool value) {
+                          languageProvider.toggleLanguage();
+                        },
                       ),
+
                       Text(
                         "پشتو",
                         style: TextStyle(color: Colors.white, fontSize: 30),
@@ -115,8 +118,25 @@ class LanguageSelectionPage extends StatelessWidget {
   }
 }
 
-class SpeakerControlPage extends StatelessWidget {
+class SpeakerControlPage extends StatefulWidget {
   const SpeakerControlPage({super.key});
+
+  @override
+  State<SpeakerControlPage> createState() => _SpeakerControlPageState();
+}
+
+class _SpeakerControlPageState extends State<SpeakerControlPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    //play audio on page load
+    final languageProvider = Provider.of<LanguageProvider>(
+      context,
+      listen: false,
+    );
+    languageProvider.playAudio('_/selection.mp3');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -169,7 +189,12 @@ class SpeakerControlPage extends StatelessWidget {
                   ),
                   SizedBox(width: 40),
                   GestureDetector(
-                    onTap: () => languageProvider.setSpeaker(false),
+                    onTap: () {
+                      languageProvider.setSpeaker(false);
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) => MainScreen()),
+                      );
+                    },
                     child: Container(
                       padding: EdgeInsets.all(20),
                       decoration: BoxDecoration(
