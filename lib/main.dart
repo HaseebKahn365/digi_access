@@ -1,11 +1,19 @@
+import 'package:digi_access/providers/language_provider.dart';
+import 'package:digi_access/providers/screens/settings_screen.dart';
 import 'package:digi_access/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+//instance of LanguageProvider
+final LanguageProvider languageProvider = LanguageProvider();
+
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => ThemeProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => LanguageProvider()),
+      ],
       child: const MyApp(),
     ),
   );
@@ -18,8 +26,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: context.watch<ThemeProvider>().themeData,
-      home: const SplashScreen(),
+      // home: const SplashScreen(),
+      home: const LanguageSettingsScreenPageView(),
     );
   }
 }
@@ -39,7 +49,9 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(const Duration(seconds: 4), () {
       if (mounted) {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const MyHomePage()),
+          MaterialPageRoute(
+            builder: (context) => const LanguageSettingsScreenPageView(),
+          ),
         );
       }
     });
@@ -68,18 +80,6 @@ class _SplashScreenState extends State<SplashScreen> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('My Home Page')),
-      body: Center(child: const Text('Welcome to the Home Page!')),
     );
   }
 }
