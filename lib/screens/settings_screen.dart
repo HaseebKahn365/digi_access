@@ -23,6 +23,7 @@ class _LanguageSettingsScreenPageViewState
       context,
       listen: false,
     );
+
     languageProvider.playAudio('_/login.mp3');
     super.initState();
   }

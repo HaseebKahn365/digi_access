@@ -29,8 +29,8 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: context.watch<ThemeProvider>().themeData,
-      // home: const SplashScreen(),
-      home: const LanguageSettingsScreenPageView(),
+      home: const SplashScreen(),
+      // home: const LanguageSettingsScreenPageView(),
     );
   }
 }
@@ -47,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     // Auto navigate to MyHomePage after 3 seconds
-    Future.delayed(const Duration(seconds: 4), () {
+    Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(

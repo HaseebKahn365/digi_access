@@ -1,5 +1,7 @@
+import 'package:digi_access/providers/language_provider.dart';
 import 'package:digi_access/screens/edu/edu_subscreen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 //here is the main screen for education
 
@@ -8,6 +10,12 @@ class EduMainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final languageProvider = Provider.of<LanguageProvider>(
+      context,
+      listen: false,
+    );
+    // Play audio on page load
+    languageProvider.playAudio('_/education/2.mp3');
     return Scaffold(
       backgroundColor: const Color(0xFF2F2F4F),
       body: SafeArea(
