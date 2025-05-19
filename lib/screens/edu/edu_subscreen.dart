@@ -5,14 +5,14 @@ import 'package:digi_access/models/edu_item.dart';
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' hide State, Center;
 
-class EduSubScreen extends StatefulWidget {
-  const EduSubScreen({super.key});
+class ShoppingPrac extends StatefulWidget {
+  const ShoppingPrac({super.key});
 
   @override
-  State<EduSubScreen> createState() => _EduSubScreenState();
+  State<ShoppingPrac> createState() => ShoppingPracState();
 }
 
-class _EduSubScreenState extends State<EduSubScreen> {
+class ShoppingPracState extends State<ShoppingPrac> {
   late Db _db;
   bool _isLoading = true;
   List<EduItem> _items = [];
