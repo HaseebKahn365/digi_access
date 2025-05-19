@@ -1,157 +1,144 @@
-import 'package:digi_access/providers/language_provider.dart';
+import 'dart:developer';
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:digi_access/models/edu_item.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:mongo_dart/mongo_dart.dart' hide State, Center;
 
 class EduSubScreen extends StatefulWidget {
-  final String videoUrl;
-  const EduSubScreen({super.key, required this.videoUrl});
+  const EduSubScreen({super.key});
 
   @override
   State<EduSubScreen> createState() => _EduSubScreenState();
 }
 
 class _EduSubScreenState extends State<EduSubScreen> {
-  late YoutubePlayerController _controller;
-  bool _isPlaying = false;
+  late Db _db;
+  bool _isLoading = true;
+  List<EduItem> _items = [];
+  String? _error;
+
   @override
   void initState() {
     super.initState();
-    final languageProvider = Provider.of<LanguageProvider>(
-      context,
-      listen: false,
-    );
-    languageProvider.stopAndDisposeAudio();
+    _connectToMongoDB();
+  }
 
-    // Enable all orientations
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
+  //the database name is digiaccessdb
+  Future<void> _connectToMongoDB() async {
+    try {
+      _db = await Db.create(
+        'mongodb+srv://haseebkahn365:n5on01PgsFBy9FDn@cluster0.b22s5fa.mongodb.net/digiaccessdb',
+      );
+      await _db.open();
+      await _fetchItems();
+    } catch (e) {
+      setState(() {
+        _error = 'Failed to connect to database: $e';
+        _isLoading = false;
+      });
+    }
+  }
 
-    final videoId = YoutubePlayer.convertUrlToId(widget.videoUrl);
-    _controller = YoutubePlayerController(
-      initialVideoId: videoId ?? '',
-      flags: const YoutubePlayerFlags(autoPlay: false, mute: false),
-    );
+  Future<void> _fetchItems() async {
+    try {
+      final collection = _db.collection('edu_store');
+      final items = await collection.find().toList();
+      setState(() {
+        log('Fetched items: $items');
+        _items = items.map((item) => EduItem.fromMap(item)).toList();
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _error = 'Failed to fetch items: $e';
+        _isLoading = false;
+      });
+    }
   }
 
   @override
   void dispose() {
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    _controller.dispose();
+    _db.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final isLandscape =
-        MediaQuery.of(context).orientation == Orientation.landscape;
-
     return Scaffold(
       backgroundColor: const Color(0xFF2F2F4F),
       body: SafeArea(
         child:
-            isLandscape
+            _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _error != null
                 ? Center(
-                  child: YoutubePlayer(
-                    controller: _controller,
-                    showVideoProgressIndicator: true,
-                    progressIndicatorColor: Colors.deepPurple,
+                  child: Text(
+                    _error!,
+                    style: const TextStyle(color: Colors.white),
                   ),
                 )
-                : SingleChildScrollView(
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                width: 120, // Increased width
-                                height: 120, // Increased height
-                                decoration: BoxDecoration(
-                                  color: Colors.black26,
-                                  borderRadius: BorderRadius.circular(
-                                    16,
-                                  ), // Larger radius
-                                ),
-                                child: IconButton(
-                                  icon: const Icon(
-                                    Icons.arrow_back,
-                                    color: Colors.white,
-                                    size: 60,
-                                  ), // Larger icon
-                                  onPressed: () => Navigator.pop(context),
-                                ),
-                              ),
-                              Container(
-                                width: 120, // Increased width
-                                height: 120, // Increased height
-                                decoration: BoxDecoration(
-                                  color: Colors.black26,
-                                  borderRadius: BorderRadius.circular(
-                                    16,
-                                  ), // Larger radius
-                                ),
-                                child: IconButton(
-                                  icon: const Icon(
-                                    Icons.home,
-                                    color: Colors.white,
-                                    size: 60,
-                                  ), // Larger icon
-                                  onPressed: () {
-                                    Navigator.of(
-                                      context,
-                                    ).popUntil((route) => route.isFirst);
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Spacer(),
-                        YoutubePlayer(
-                          controller: _controller,
-                          showVideoProgressIndicator: true,
-                          progressIndicatorColor: Colors.deepPurple,
-                        ),
-                        const SizedBox(height: 20),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 32.0),
-                          child: Container(
-                            width: 80,
-                            height: 80,
-                            decoration: const BoxDecoration(
-                              color: Colors.deepPurple,
-                              shape: BoxShape.circle,
-                            ),
-                            child: IconButton(
-                              icon: Icon(
-                                _isPlaying ? Icons.pause : Icons.play_arrow,
-                                color: Colors.white,
-                                size: 40,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  _isPlaying = !_isPlaying;
-                                  _isPlaying
-                                      ? _controller.play()
-                                      : _controller.pause();
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-                        Spacer(),
-                      ],
-                    ),
+                : GridView.builder(
+                  padding: const EdgeInsets.all(16),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.75,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
                   ),
+                  itemCount: _items.length,
+                  itemBuilder: (context, index) {
+                    final item = _items[index];
+                    return Card(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.vertical(
+                                  top: Radius.circular(12),
+                                ),
+                                image: DecorationImage(
+                                  image: CachedNetworkImageProvider(
+                                    item.imageUrl,
+                                  ),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  item.name,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'Rs. ${item.price.toStringAsFixed(2)}',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.green,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
       ),
     );

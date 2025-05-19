@@ -37,6 +37,8 @@ dependencies:
   provider: ^6.1.5
   audioplayers: ^6.4.0
   youtube_player_flutter: ^9.1.1
+  mongo_dart: ^0.10.5
+  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:

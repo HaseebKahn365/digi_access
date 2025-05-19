@@ -58,11 +58,7 @@ class EduMainScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder:
-                              (context) => const EduSubScreen(
-                                videoUrl:
-                                    'https://www.youtube.com/watch?v=UwmmULz9-Mk',
-                              ),
+                          builder: (context) => const EduSubScreen(),
                         ),
                       );
                     },
@@ -92,11 +88,7 @@ class EduMainScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder:
-                              (context) => const EduSubScreen(
-                                videoUrl:
-                                    'https://www.youtube.com/watch?v=atIXycYFWAM',
-                              ),
+                          builder: (context) => const EduSubScreen(),
                         ),
                       );
                     },
