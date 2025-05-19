@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:digi_access/screens/edu/edu_subscreen.dart';
 import 'package:flutter/material.dart';
 
 //here is the main screen for education
@@ -84,6 +85,10 @@ class EduMainScreen extends StatelessWidget {
           break;
         case 'Shopping Practice':
           // Navigate to shopping practice screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ShoppingPrac()),
+          );
           break;
       }
     }
